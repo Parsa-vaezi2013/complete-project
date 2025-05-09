@@ -1,9 +1,9 @@
-POST http://127.0.0.1:8000/api/signup/
+POST http://127.0.0.1:8000/api/token/
+
 Content-Type: application/json
 
 {
   "username": "zara1234",
   "password": "zara912",
-  "password2": "zara912"
 }
 

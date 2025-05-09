@@ -82,3 +82,34 @@ class SignupView(APIView):
 
         user = User.objects.create_user(username=username, password=password)
         return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
+    
+    
+    
+from rest_framework import permissions
+
+class ProductAccessPermission(permissions.BasePermission):
+    """
+    - Admin: Full access
+    - Seller: Can manage (edit/delete) own products
+    - Customer: Can only view products they've visited
+    """
+
+    def has_permission(self, request, view):
+        if request.user and request.user.is_staff:
+            return True
+
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return hasattr(request.user, 'is_seller') and request.user.is_seller
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_staff:
+            return True
+
+        if hasattr(request.user, 'is_customer') and request.user.is_customer:
+            return request.method in permissions.SAFE_METHODS and obj in request.user.visited_products.all()
+        
+        if hasattr(request.user, 'is_seller') and request.user.is_seller:
+            return obj.seller == request.user
+
+        return False

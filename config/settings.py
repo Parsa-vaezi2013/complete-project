@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'exchange',
     'django_redis',
     'accounts',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
+     'rest_framework_simplejwt',
 
 ]
 
@@ -143,5 +144,9 @@ CACHES = {
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
