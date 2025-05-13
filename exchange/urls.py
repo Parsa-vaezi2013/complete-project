@@ -8,3 +8,12 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('signup/', SignupView.as_view(), name='signup'),
 ]
+
+
+from rest_framework.routers import DefaultRouter
+from .views import ProductViewSet
+
+router = DefaultRouter()
+router.register(r'products', ProductViewSet)
+
+urlpatterns = router.urls

@@ -113,3 +113,25 @@ class ProductAccessPermission(permissions.BasePermission):
             return obj.seller == request.user
 
         return False
+
+
+from rest_framework import viewsets
+from .models import Product
+from .serializers import ProductSerializer
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import Product
+from .serializers import ProductSerializer
+from .filters import ProductFilter
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
