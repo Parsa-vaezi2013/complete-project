@@ -1,6 +1,7 @@
 
 from django.db import models
-from accounts.models import CustomUser
+from accounts import signals
+from accounts.models import User
 class Warehouse(models.Model):
     name = models.CharField(max_length=100)
 
@@ -8,13 +9,22 @@ class Warehouse(models.Model):
         return self.name
 
 class Product(models.Model):
-    name = models.CharField(max_length=100)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     product_name = models.CharField(max_length=100)
     price_usd = models.DecimalField(max_digits=10, decimal_places=2)
     price_irr = models.BigIntegerField(null=True, blank=True)
     quantity = models.PositiveIntegerField(default=0)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name='products')
     category = models.CharField(max_length=100)
+
+
+    class Meta:
+        permissions = [
+            ("view_all_products", "can view all product"),
+            # ("add_product", "can add product"),
+            ("view_customers", "can view customers")
+        ]
+
 
     def __str__(self):
         return self.name

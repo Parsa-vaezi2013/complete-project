@@ -1,9 +1,6 @@
-POST http://127.0.0.1:8000/api/token/
-
+POST http://127.0.0.1:8000/api/token/refresh/
 Content-Type: application/json
 
 {
-  "username": "zara1234",
-  "password": "zara912",
+"refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0ODE4MzMyOSwiaWF0IjoxNzQ4MDk2OTI5LCJqdGkiOiIxMjc2OWUzYTMxMWQ0NTU5OTU4MmVkMzg0MGVmMDE2NSIsInVzZXJfaWQiOjJ9.PrmCYLuqhvehvOKFWIMHdfcYxPaBaS-i840PXhlj0Jw"
 }
-

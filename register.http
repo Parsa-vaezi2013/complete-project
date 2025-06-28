@@ -1,0 +1,9 @@
+POST http://127.0.0.1:8000/api/acc/register/
+Content-Type: application/json
+
+{
+  "username": "zara1234",
+  "email": "zahra@example.com",
+  "password": "zahra912",
+  "password2": "zahra912"
+}

@@ -8,8 +8,15 @@ from .serializers import ProductSerializer, WarehouseSerializer
 from .utils import get_dollar_price_from_nobitex
 from django.core.cache import cache
 from decimal import Decimal
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import redirect
+from django.views.generic import ListView, CreateView
+from .models import Product
 
-class ProductListView(APIView):
+class ProductListView(ListView, PermissionRequiredMixin):
+    model = Product
+    permission_required = 'accounts.view_all_products'
+
     def get(self, request):
         products = Product.objects.all()
 
@@ -26,6 +33,13 @@ class ProductListView(APIView):
 
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return Product.objects.all(owner=user)
+        elif user.role == 'customer':
+            return Product.objects.none()
+
 
 class WarehouseCreateView(APIView):
     def post(self, request):
@@ -135,3 +149,25 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
+
+
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Product
+
+class UpdateProductPriceView(APIView):
+    def patch(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
+            return Response({'error': 'محصول یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+
+        price = request.data.get('price')
+        if price is None:
+            return Response({'error': 'قیمت وارد نشده'}, status=status.HTTP_400_BAD_REQUEST)
+
+        product.price = price
+        product.save()
+        return Response({'message': 'قیمت با موفقیت آپدیت شد'}, status=status.HTTP_200_OK)
